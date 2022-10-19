@@ -35,15 +35,34 @@ defmodule PiedraPapelTijera do
     IO.inspect(state)
 
     if length(state) == 2 do
-      case state do
-        [{a, :tijera} | [{b, :piedra} | _tail]] ->
-          {:reply, {:ok, %{"ganador" => a, "perdedor" => b}}, []}
-
-        _ ->
-          {:reply, {:ok, "No hay ganador"}, state}
-      end
+      {:reply, {:ok, checkWinner(state)}, []}
     else
       {:reply, {:ok, "No hay ganador"}, state}
+    end
+  end
+
+  def handle_info(any, state) do
+    IO.puts(any)
+
+    {:noreply, state}
+  end
+
+  def checkWinner(state) do
+    [player1, player2] = state
+
+    {nombre1, apuesta1} = player1
+    {nombre2, apuesta2} = player2
+    apuesta1 = String.to_atom(apuesta1)
+    apuesta2 = String.to_atom(apuesta2)
+
+    cond do
+      apuesta1 == :tijera && apuesta2 == :piedra -> %{"ganador" => nombre2, "perdedor" => nombre1}
+      apuesta1 == :piedra && apuesta2 == :tijera -> %{"ganador" => nombre1, "perdedor" => nombre2}
+      apuesta1 == :tijera && apuesta2 == :papel -> %{"ganador" => nombre1, "perdedor" => nombre2}
+      apuesta1 == :papel && apuesta2 == :tijera -> %{"ganador" => nombre2, "perdedor" => nombre1}
+      apuesta1 == :piedra && apuesta2 == :papel -> %{"ganador" => nombre2, "perdedor" => nombre1}
+      apuesta1 == :papel && apuesta2 == :piedra -> %{"ganador" => nombre1, "perdedor" => nombre2}
+      apuesta1 == apuesta2 -> %{"ganador" => "Ninguno", "perdedor" => "Ninguno"}
     end
   end
 end

@@ -19,6 +19,6 @@ defmodule PiedraPapelTijeraTest do
   test "piedra" do
     PiedraPapelTijera.jugar({"david", :piedra})
     PiedraPapelTijera.jugar({"jose", :tijera})
-    assert PiedraPapelTijera.comprobar() == {:ok, %{"ganador" => "jose", "perdedor" => "david"}}
+    assert PiedraPapelTijera.comprobar() == %{"ganador" => "david", "perdedor" => "jose"}
   end
 end

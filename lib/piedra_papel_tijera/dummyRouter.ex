@@ -1,4 +1,4 @@
-defmodule PiedraPapelTijera.Router do
+defmodule PiedraPapelTijera.Router2 do
   alias PiedraPapelTijera.JSONUtils, as: JSON
   use Plug.Router
 
@@ -7,27 +7,32 @@ defmodule PiedraPapelTijera.Router do
   plug(:match)
 
   plug(Plug.Parsers,
-  parsers: [:json],
-  pass: ["application/json"],
-  json_decoder: Jason
+    parsers: [:json],
+    pass: ["application/json"],
+    json_decoder: Jason
   )
 
   plug(:dispatch)
 
   get "/" do
-  send_resp(conn, 200, "OK")
+    send_resp(conn, 200, "OK")
   end
 
   get "/posts" do
+    # Find all the posts in the database
     posts =
-      Mongo.find(:mongo, "Posts", %{}) # Find all the posts in the database
-      |> Enum.map(&JSON.normaliseMongoId/1) # For each of the post normalise the id
-      |> Enum.to_list() # Convert the records to a list
-      |> Jason.encode!() # Encode the list to a JSON string
+      Mongo.find(:mongo, "Posts", %{})
+      # For each of the post normalise the id
+      |> Enum.map(&JSON.normaliseMongoId/1)
+      # Convert the records to a list
+      |> Enum.to_list()
+      # Encode the list to a JSON string
+      |> Jason.encode!()
 
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(200, posts) # Send a 200 OK response with the posts in the body
+    # Send a 200 OK response with the posts in the body
+    |> send_resp(200, posts)
   end
 
   post "/post" do
